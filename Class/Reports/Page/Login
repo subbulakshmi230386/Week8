@@ -1,0 +1,38 @@
+package page;
+
+import java.io.IOException;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.chrome.ChromeDriver;
+
+import Base.ProjectCommonMethods;
+
+public class LoginPage extends ProjectCommonMethods
+{
+	public LoginPage(ChromeDriver driver)
+	{
+		this.driver=driver;
+	}
+	
+  public  LoginPage enterUserName() throws IOException
+  {
+	  driver.findElement(By.id("username")).sendKeys("DemoSalesManager");
+	  reportstep("username is entered sucessfully","pass");
+	  return this;
+  }
+  public LoginPage enterPassWord() throws IOException
+  {
+	  driver.findElement(By.id("password")).sendKeys("crmsfa");
+	  reportstep("password is entered sucessfully","pass");
+	  return this;
+  }
+  public HomePage clickLogin() throws IOException
+  {
+	  driver.findElement(By.className("decorativeSubmit")).click();
+	 /* HomePage hp=new HomePage();
+	  return hp;
+	  (or)*/
+	  reportstep("button click sucessfully","pass");
+	  return new HomePage(driver);
+  }
+}
