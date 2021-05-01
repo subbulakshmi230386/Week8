@@ -1,0 +1,39 @@
+package testcases;
+//testcase
+import java.io.IOException;
+
+import org.testng.annotations.BeforeTest;
+import org.testng.annotations.Test;
+
+import Base.ProjectCommonMethods;
+
+import page.LoginPage;
+
+
+
+public class LoginLogut extends ProjectCommonMethods
+{
+	@BeforeTest
+	public void setFileName()
+	{
+		excelFileName = "createLead";
+		testName="LoginwithValidData";
+		testDescription="Verify loginfor valid Data";
+		testCategory="funtional";
+		testAuthor="Suba";
+	}
+	
+	@Test(dataProvider = "fetchdata")
+	public void LoginLogout(String cname, String fname, String lname) throws IOException
+	{
+	   
+		new LoginPage(driver).enterUserName().enterPassWord().clickLogin()
+		.clickcrmSfa().clickLead().clickcreateLead().
+		entercompanyName(cname)
+		.enterfirstName(fname).enterlastName(lname)
+		.clicksubmit().verifyFirstName();
+		
+				
+	}
+
+}
