@@ -1,0 +1,97 @@
+//Basefile.java
+
+package Base;
+
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.Properties;
+import java.util.concurrent.TimeUnit;
+
+
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.AfterSuite;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.BeforeSuite;
+import org.testng.annotations.DataProvider;
+
+import com.aventstack.extentreports.ExtentReports;
+import com.aventstack.extentreports.ExtentTest;
+import com.aventstack.extentreports.reporter.ExtentHtmlReporter;
+
+import io.github.bonigarcia.wdm.WebDriverManager;
+import page.ReadExcel;
+
+
+public class ProjectCommonMethods
+{
+	public   ChromeDriver driver;
+	public String excelFileName;
+	public static Properties prop;
+	public static ExtentHtmlReporter reporter;
+	public static 	ExtentReports extent;
+	public static ExtentTest test;
+	public String testName,testDescription,testCategory,testAuthor;
+
+	
+	@BeforeSuite
+	public void startReport()
+	{
+		 reporter=new ExtentHtmlReporter("./reports/loginresult.html");
+	     extent=new ExtentReports();
+		 extent.attachReporter(reporter);
+	}
+	@BeforeClass
+	public void testdetails()
+	{
+		 test=extent.createTest("testName","testDescription");
+		//Adding category and author
+		test.assignCategory("testCategory");
+		test.assignAuthor("testAuthor");
+	}
+	public void reportstep(String msg,String status)
+	{
+		if(status.equalsIgnoreCase("pass"))
+		{
+		  test.pass(msg);
+		}
+		else if(status.equalsIgnoreCase("fail"))
+		{
+		test.fail(msg);
+		}
+	}
+		    @BeforeMethod
+		  public void precondion() throws IOException
+			{
+		    	FileInputStream fis =new FileInputStream("./src/main/resources/newconfigure.properties");
+		    	prop=new Properties();
+		    	prop.load(fis);
+			WebDriverManager.chromedriver().setup();
+			 driver = new ChromeDriver();
+			driver.manage().window().maximize();
+			driver.get("http://leaftaps.com/opentaps");
+			//driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
+			driver.manage().timeouts().implicitlyWait(10000, TimeUnit.MILLISECONDS);
+			
+			}
+		    @DataProvider
+		    public String[][] fetchdata() throws IOException
+		    {
+		    	ReadExcel obj=new ReadExcel();
+		    	String[][] excelRead=obj.excelRead(excelFileName);
+		    	return excelRead;
+		    }
+		    @AfterMethod
+		  public void postcondition()
+			{
+				driver.close();
+			}
+	@AfterSuite
+       public void endReport()
+       {
+		extent.flush();
+       }
+}
+
+
